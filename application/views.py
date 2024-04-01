@@ -13,3 +13,4 @@ def home():
     db.session.add(new)
     db.session.commit()
     return "Hello World! User Added"
+
