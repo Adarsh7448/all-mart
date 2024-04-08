@@ -7,5 +7,10 @@ const app = new Vue({
                     <nav-bar></nav-bar>
                     <router-view></router-view>
                </div>`,
-    router
+    router,
+    methods:{
+        updatecat(){
+            console.log("update categories triggered")
+        }
+    }
 })
