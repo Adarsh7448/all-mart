@@ -14,7 +14,7 @@ class CategoryApi(Resource):
     @auth_required('token')
     def get(self):
         categories = Category.query.all()
-        # time.sleep(0.5)
+        time.sleep(0.2)
         if categories:
             all_cat = []
             for cat in categories:

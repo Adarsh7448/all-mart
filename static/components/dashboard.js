@@ -25,10 +25,13 @@ const dashboard = Vue.component('user-dash', {
                                         <tr v-for="(cat, index) in cat_data">
                                             <th scope="row">{{index+1}}</th>
                                             <td>{{cat.category}}</td>
-                                            <td>{{cat.description}}</td>
+                                            <td>
+                                                <p>{{cat.description}}</p> 
+                                            </td>
                                             <td style="text-align: right">
-                                                <router-link class="btn btn-warning" :to="{ name: 'update', params: { id: cat.id }}">Update</router-link>
-                                                <button class="btn btn-danger" @click="deleteCat(cat.id)">Delete</button>
+                                                <router-link class="btn btn-warning" :to="{ name: 'update', params: { id: cat.id }}"><i class="bi bi-pencil"></i></router-link>
+                                                <button class="btn btn-danger m-2" @click="deleteCat(cat.id)"><i class="bi bi-trash"></i></button>
+                                                <router-link class="btn btn-info" :to="{ name: 'cat-products', params: { id: cat.id }}">Details</router-link>
                                             </td>
                                         </tr>   
                                     </tbody>
