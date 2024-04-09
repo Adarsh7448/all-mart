@@ -133,8 +133,8 @@ const dashboard = Vue.component('user-dash', {
             }
             else{
                 let error = await response.json()
-                console.log(error.message)
-                this.message = error.message;
+                console.log(error.response.errors[0])
+                this.message = error.response.errors[0];
                 this.loading = false
             }   
         }
