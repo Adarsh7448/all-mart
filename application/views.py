@@ -69,3 +69,17 @@ def get_cat(id):
         }
     else:
         return {"message": "Category not found"}, 404
+
+@app.get('/get_product/<int:id>')
+def get_prod(id):
+    this_prod = Product.query.get(id)
+    if this_prod:
+        return {
+        "p_name" : this_prod.p_name,
+        "quantity": this_prod.quantity,
+        "unit": this_prod.unit,
+        "price": this_prod.price,
+        "section": this_prod.section[0].id
+        }
+    else:
+        return {"message": "Product not found"}, 404

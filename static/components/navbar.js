@@ -14,7 +14,7 @@ const navbar = Vue.component('nav-bar', {
                                                 <router-link class="nav-link active" aria-current="page" to="/register">Register</router-link>
                                             </li>
                                             <li v-if="this.token" class="nav-item">
-                                                <span class="nav-link active" aria-current="page" @click="logout">Logout</span>
+                                                <button class="btn btn-danger" @click="logout" style="float: right;"><i class="bi bi-box-arrow-right"></i>Logout</button>
                                             </li>
                                         </ul>
                                     </div>

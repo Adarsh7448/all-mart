@@ -17,7 +17,6 @@ class CategoryApi(Resource):
     @auth_required('token')
     def get(self):
         categories = Category.query.all()
-        time.sleep(0.2)
         if categories:
             all_cat = []
             for cat in categories:
@@ -82,6 +81,7 @@ class ProductApi(Resource):
                 this_prod["price"] = product.price
                 products.append(this_prod)
             return {
+                    "cat_id": this_section.id,
                     "section": this_section.c_name,
                     "products": products
                     }, 200

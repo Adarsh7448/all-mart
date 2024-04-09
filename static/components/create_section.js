@@ -3,7 +3,7 @@ const create_section = Vue.component("create-section", {
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-6">
-                        <h3 class="mt-3">Create a new categories</h3>
+                        <h3 class="mt-3">Create a new category</h3>
                         <form @submit.prevent="create_cat">
                             <div class="mb-3">
                                 <label for="c_name" class="form-label">Category Name</label>
@@ -15,7 +15,14 @@ const create_section = Vue.component("create-section", {
                                 <textarea class="form-control" id="description" v-model="formData.c_description"></textarea>
                             </div>
                             <div class="mb-3">
-                                <button type="submit" class="btn btn-warning" style="float: right;">Create</button>
+                                <button type="submit" class="btn btn-warning" style="float: right;">
+                                    <span v-if="loading">
+                                        <span class="spinner-border spinner-border-sm justify-content-center" role="status"></span>
+                                    </span>
+                                    <span v-else>
+                                        Create
+                                    </span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -26,11 +33,13 @@ const create_section = Vue.component("create-section", {
             formData:{
                 c_name: "",
                 c_description: ""
-            }
+            },
+            loading:false
         }
     },
     methods:{
         async create_cat(){
+            this.loading = true
             let response = await fetch("/api/create_category", {
                 headers:{"Content-Type": "application/json",
                          "Authentication-Token": localStorage.getItem("auth_token")},
@@ -40,6 +49,7 @@ const create_section = Vue.component("create-section", {
             if (response.ok){    
                 console.log("category Added")
                 this.$router.push({path:'/dashboard', query:{"role":"admin"}})
+                this.loading = false
             }
             else{
                 console.log(output)

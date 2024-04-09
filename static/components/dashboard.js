@@ -29,7 +29,7 @@ const dashboard = Vue.component('user-dash', {
                                                 <p>{{cat.description}}</p> 
                                             </td>
                                             <td style="text-align: right">
-                                                <router-link class="btn btn-warning" :to="{ name: 'update', params: { id: cat.id }}"><i class="bi bi-pencil"></i></router-link>
+                                                <router-link class="btn btn-warning" :to="{ name: 'update-section', params: { id: cat.id }}"><i class="bi bi-pencil"></i></router-link>
                                                 <button class="btn btn-danger m-2" @click="deleteCat(cat.id)"><i class="bi bi-trash"></i></button>
                                                 <router-link class="btn btn-info" :to="{ name: 'cat-products', params: { id: cat.id }}">Details</router-link>
                                             </td>

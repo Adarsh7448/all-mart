@@ -28,9 +28,8 @@ const cat_products = Vue.component('cat-products', {
                                             <td>{{prod.unit}}</td> 
                                             <td>{{prod.price}}</td> 
                                             <td style="text-align: right">
-                                                <router-link class="btn btn-warning" :to="{ name: 'update', params: {}}"><i class="bi bi-pencil"></i></router-link>
-                                                <button class="btn btn-danger m-2" @click="deleteCat()"><i class="bi bi-trash"></i></button>
-                                                <router-link class="btn btn-info" :to="{ name: 'cat-products', params: { }}">Details</router-link>
+                                                <router-link class="btn btn-warning" :to="{ name: 'update-product', params: {id: prod.id}}"><i class="bi bi-pencil"></i></router-link>
+                                                <button class="btn btn-danger m-2" @click="deleteProd(prod.id)"><i class="bi bi-trash"></i></button>
                                             </td>
                                         </tr>   
                                     </tbody>
@@ -39,7 +38,7 @@ const cat_products = Vue.component('cat-products', {
                             <div v-else class="row justify-content-center mt-5">
                                 No products found!
                             </div>
-                            <router-link class="btn btn-info m-3" style="float: right;" to="/section">Create Product</router-link>
+                            <router-link class="btn btn-info m-3" style="float: right;" :to="{ name: 'create-product', params: { cat_id: section_id }}">Create Product</router-link>
                         </div>
                     </div>
                     <div v-else class="container m-3">
@@ -49,7 +48,8 @@ const cat_products = Vue.component('cat-products', {
     data (){
         return {
             token:"",
-            section: "",
+            section:"",
+            section_id: null,
             cat_products: [],
             message: "",
             loading: true        
@@ -76,18 +76,36 @@ const cat_products = Vue.component('cat-products', {
                 let output = await response.json()
                 console.log("products fetched!")
                 console.log(output)
+                this.section_id = output.cat_id
                 this.section = output.section
                 this.cat_products = output.products
                 this.loading = false
             }
             else{
                 let error = await response.json()
-                console.log("error fecthing")
+                console.log("error fetching")
                 this.message = error.response.errors[0]
                 this.loading = false
             }
+        },
+        async deleteProd(prod_id){
+            let response = await fetch(`/api/delete_product/${prod_id}`,{
+                                        headers:{"Content-Type": "application/json",
+                                                 "Authentication-Token": localStorage.getItem("auth_token")},
+                                        method:'DELETE'
+                                    })
+            if (response.ok){
+                let output = await response.json()
+                console.log(output);
+                this.getCatProd();
+            }
+            else{
+                let error = await response.json()
+                console.log(error.message)
+                this.message = error.message;
+            }
         }
     }
-            })
+})
 
 export default cat_products
