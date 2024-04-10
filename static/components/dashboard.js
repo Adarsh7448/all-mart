@@ -3,7 +3,7 @@
 
 const dashboard = Vue.component('user-dash', {
     template:  `<div class="container">
-                    <div v-if="this.token && this.$route.query.role == 'admin'">
+                    <div v-if="this.token && this.role == 'admin'">
                         <div class="row justify-content-center mt-5" v-if="loading">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -43,7 +43,7 @@ const dashboard = Vue.component('user-dash', {
                             <router-link class="btn btn-info m-3" style="float: right;" to="/section">Create Section</router-link>
                         </div>
                     </div>
-                    <div v-else-if="this.token && this.$route.query.role == 'user'">
+                    <div v-else-if="this.token && this.role == 'user'">
                         <div class="row justify-content-center mt-5" v-if="loading">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -67,7 +67,7 @@ const dashboard = Vue.component('user-dash', {
                                             <td>{{cat.category}}</td>
                                             <td>{{cat.description}}</td>
                                             <td style="text-align: right">
-                                                <button class="btn btn-info" @click="deleteCat(cat.id)">View</button>
+                                            <router-link class="btn btn-info" :to="{ name: 'cat-products', params: { id: cat.id }}">View</router-link>
                                             </td>
                                         </tr>   
                                     </tbody>
@@ -86,6 +86,7 @@ const dashboard = Vue.component('user-dash', {
     data(){
         return{
             token: "",
+            role: "",
             cat_data: [],
             message: "Invalid user",
             loading: true
@@ -93,6 +94,7 @@ const dashboard = Vue.component('user-dash', {
     },
     beforeMount(){
         this.token = localStorage.getItem('auth_token')
+        this.role = localStorage.getItem('role')
         console.log("token loaded")
     },
     async mounted(){

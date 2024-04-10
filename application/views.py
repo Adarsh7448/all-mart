@@ -24,7 +24,7 @@ def user_login():
         if check_password_hash(this_user.password, password):
             return {
                 "auth_token": this_user.get_auth_token(), 
-                "role": "admin"
+                "role": this_user.roles[0].name
                 }, 200
         else:
             return {"message": "incorrect password for the user"}, 400

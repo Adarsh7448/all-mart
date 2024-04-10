@@ -27,10 +27,16 @@ const cat_products = Vue.component('cat-products', {
                                             <td>{{prod.quantity}}</td> 
                                             <td>{{prod.unit}}</td> 
                                             <td>{{prod.price}}</td> 
-                                            <td style="text-align: right">
+                                            <td v-if="role=='admin'" style="text-align: right">
                                                 <router-link class="btn btn-warning" :to="{ name: 'update-product', params: {id: prod.id}}"><i class="bi bi-pencil"></i></router-link>
                                                 <button class="btn btn-danger m-2" @click="deleteProd(prod.id)"><i class="bi bi-trash"></i></button>
                                             </td>
+                                            <td v-else class="d-flex justify-content-center">
+                                                <div class="input-group mb-3" style="width:140px">
+                                                    <input type="number" class="form-control" v-model="quant">
+                                                    <button class="btn btn-warning" type="button" @click="cart(prod.id)"><i class="bi bi-cart"></i></button>
+                                                </div>
+                                            </td
                                         </tr>   
                                     </tbody>
                                 </table>
@@ -38,7 +44,7 @@ const cat_products = Vue.component('cat-products', {
                             <div v-else class="row justify-content-center mt-5">
                                 No products found!
                             </div>
-                            <router-link class="btn btn-info m-3" style="float: right;" :to="{ name: 'create-product', params: { cat_id: section_id }}">Create Product</router-link>
+                            <router-link v-if="role=='admin'" class="btn btn-info m-3" style="float: right;" :to="{ name: 'create-product', params: { cat_id: section_id }}">Create Product</router-link>
                         </div>
                     </div>
                     <div v-else class="container m-3">
@@ -48,15 +54,18 @@ const cat_products = Vue.component('cat-products', {
     data (){
         return {
             token:"",
+            role:"",
             section:"",
             section_id: null,
             cat_products: [],
             message: "",
-            loading: true        
+            loading: true,
+            quant: 0        
             }
         },
     beforeMount(){
         this.token = localStorage.getItem('auth_token')
+        this.role = localStorage.getItem('role')
         console.log("token loaded")
     },
     mounted(){
@@ -104,6 +113,9 @@ const cat_products = Vue.component('cat-products', {
                 console.log(error.message)
                 this.message = error.message;
             }
+        },
+        cart(prod_id){
+            console.log(prod_id, `quantity is ${this.quant}`)
         }
     }
 })

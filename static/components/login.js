@@ -33,7 +33,8 @@ const login_page = Vue.component('login-page', {
                         let output = await response.json()
                         if (response.ok){    
                             localStorage.setItem("auth_token", output.auth_token)
-                            this.$router.push({path: '/dashboard', query: {'role': output.role}})
+                            localStorage.setItem("role", output.role)
+                            this.$router.push('/dashboard')
                         }
                         else{
                             console.log(output)
