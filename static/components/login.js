@@ -34,6 +34,7 @@ const login_page = Vue.component('login-page', {
                         if (response.ok){    
                             localStorage.setItem("auth_token", output.auth_token)
                             localStorage.setItem("role", output.role)
+                            localStorage.setItem("id", output.id)
                             this.$router.push('/dashboard')
                         }
                         else{

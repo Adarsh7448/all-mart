@@ -34,7 +34,7 @@ const cat_products = Vue.component('cat-products', {
                                             <td v-else class="d-flex justify-content-center">
                                                 <div class="input-group mb-3" style="width:140px">
                                                     <input type="number" class="form-control" v-model="quant">
-                                                    <button class="btn btn-warning" type="button" @click="cart(prod.id)"><i class="bi bi-cart"></i></button>
+                                                    <button class="btn btn-warning" type="button" @click="addToCart(prod.id)"><i class="bi bi-cart"></i></button>
                                                 </div>
                                             </td
                                         </tr>   
@@ -57,6 +57,7 @@ const cat_products = Vue.component('cat-products', {
             role:"",
             section:"",
             section_id: null,
+            user_id: null,
             cat_products: [],
             message: "",
             loading: true,
@@ -66,6 +67,7 @@ const cat_products = Vue.component('cat-products', {
     beforeMount(){
         this.token = localStorage.getItem('auth_token')
         this.role = localStorage.getItem('role')
+        this.user_id = localStorage.getItem('id')
         console.log("token loaded")
     },
     mounted(){
@@ -114,8 +116,23 @@ const cat_products = Vue.component('cat-products', {
                 this.message = error.message;
             }
         },
-        cart(prod_id){
-            console.log(prod_id, `quantity is ${this.quant}`)
+        async addToCart(prod_id){
+            let response = await fetch(`/user/${this.user_id}/cart`, {
+                                        headers:{
+                                                 "Content-Type": "application/json",
+                                                 "Authentication-Token": this.token
+                                                },
+                                        method: 'POST',
+                                        body: JSON.stringify({"prod_id": prod_id, "quant": this.quant})                      
+                                    })
+            if(response.ok){
+                let output = await response.json()
+                console.log(output.message)
+            }
+            else{
+                let error = await response.json()
+                console.log(error)
+            }                        
         }
     }
 })

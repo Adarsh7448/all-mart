@@ -3,7 +3,7 @@
 
 const dashboard = Vue.component('user-dash', {
     template:  `<div class="container">
-                    <div v-if="this.token && this.role == 'admin'">
+                    <div v-if="token && role == 'admin'">
                         <div class="row justify-content-center mt-5" v-if="loading">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -43,14 +43,17 @@ const dashboard = Vue.component('user-dash', {
                             <router-link class="btn btn-info m-3" style="float: right;" to="/section">Create Section</router-link>
                         </div>
                     </div>
-                    <div v-else-if="this.token && this.role == 'user'">
+                    <div v-else-if="token && role == 'user'">
                         <div class="row justify-content-center mt-5" v-if="loading">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
                         <div v-else>
-                            <h3 class="mt-3">Your major categories</h3>
+                            <div class="d-flex justify-content-between mt-3">
+                                <h3>Your major categories</h3>
+                                <router-link class="btn btn-warning" :to="{name:'user-cart', params: {id:id}}"><i class="bi bi-cart3"></i> My Cart</router-link>
+                            </div>
                             <div v-if="cat_data.length!=0">
                                 <table class="table table-hover">
                                     <thead>
@@ -87,6 +90,7 @@ const dashboard = Vue.component('user-dash', {
         return{
             token: "",
             role: "",
+            id:"",
             cat_data: [],
             message: "Invalid user",
             loading: true
@@ -95,6 +99,7 @@ const dashboard = Vue.component('user-dash', {
     beforeMount(){
         this.token = localStorage.getItem('auth_token')
         this.role = localStorage.getItem('role')
+        this.id = localStorage.getItem('id')
         console.log("token loaded")
     },
     async mounted(){
