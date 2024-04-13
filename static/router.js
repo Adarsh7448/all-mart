@@ -8,6 +8,8 @@ import cat_products from "./components/cat_products.js"
 import create_product from "./components/create_product.js"
 import update_product from "./components/update_product.js"
 import user_cart from "./components/user/user_cart.js"
+import create_order from "./components/user/create_order.js"
+import user_orders from "./components/user/user_orders.js";
 
 const routes = [
     {path: '/', component: home_page},
@@ -20,6 +22,8 @@ const routes = [
     {path: '/category/:id/products', component: cat_products, name: "cat-products"},
     {path: '/product/:cat_id', component: create_product, name: "create-product"},
     {path: '/cart/:id', component: user_cart, name: "user-cart"},
+    {path: '/create_order/:id', component: create_order, name: "create-order"},
+    {path: '/orders/:id', component: user_orders, name: "user-orders"},
 ]
 
 const router = new VueRouter({

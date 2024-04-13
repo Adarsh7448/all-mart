@@ -6,7 +6,7 @@ const user_cart = Vue.component('user-cart', {
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                        <div v-else>
+                        <div v-else class="row justify-content-center mt-5">
                             <h3 class="mt-3">Your cart</h3>
                             <div v-if="userCart.length!=0">
                                 <table class="table table-hover">
@@ -35,6 +35,9 @@ const user_cart = Vue.component('user-cart', {
                                         </tr>   
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-end m-3">
+                                    <router-link class="btn btn-warning" :to="{name:'create-order', params: {id:user_id}}">Checkout</router-link>
+                                </div>
                             </div>
                             <div v-else class="row justify-content-center mt-5">
                                 Your cart is empty!
@@ -104,6 +107,9 @@ const user_cart = Vue.component('user-cart', {
                 let error = await response.json();
                 console.log(error.message)
             }                            
+        },
+        createOrder(id){
+            console.log(id)
         }
     }
 })

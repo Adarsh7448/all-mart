@@ -52,7 +52,10 @@ const dashboard = Vue.component('user-dash', {
                         <div v-else>
                             <div class="d-flex justify-content-between mt-3">
                                 <h3>Your major categories</h3>
-                                <router-link class="btn btn-warning" :to="{name:'user-cart', params: {id:id}}"><i class="bi bi-cart3"></i> My Cart</router-link>
+                                <div>
+                                    <router-link class="btn btn-warning" :to="{name:'user-cart', params: {id:id}}"><i class="bi bi-cart3"></i> My Cart</router-link>
+                                    <router-link class="btn btn-info" :to="{name:'user-orders', params: {id:id}}">My Orders</router-link>
+                                </div>
                             </div>
                             <div v-if="cat_data.length!=0">
                                 <table class="table table-hover">

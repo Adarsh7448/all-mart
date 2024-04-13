@@ -1,11 +1,13 @@
 from flask import current_app as app 
 from flask import request, render_template 
 from .database import db
-from .models import Category, Product, User, Cart
+from .models import Category, Product, User, Cart, Order, OrderProduct
 from flask_security import hash_password
 from flask_security import auth_required, roles_required
 from werkzeug.security import generate_password_hash, check_password_hash 
-
+import string
+import random
+ 
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -131,4 +133,57 @@ def delete_cart_item(cart_id):
     else:
         return {
             "message": "No item found!"
+        }, 404 
+
+@app.post('/order/<int:user_id>/create')
+def create_order(user_id):
+    order_pre = "ODR-"+str(user_id)+"-"
+    order_post = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+    order_key = order_pre + order_post
+    print(order_key)
+    order_details = request.json
+    new_order = Order(id = order_key, amount = order_details['amount'], user_id = user_id)
+    db.session.add(new_order)
+    db.session.commit()
+
+    for prod in order_details['products']:
+        product_obj = Product.query.filter_by(p_name = prod['prod_name']).first()
+        product_obj.quantity -= prod['req_quant']
+        db.session.commit()
+        prod_order_obj = OrderProduct(prod_id = product_obj.id, quantity = prod['req_quant'], price = prod['unit_price'], order_id = order_key)
+        db.session.add(prod_order_obj)
+        db.session.commit()
+    return {
+        "message": "order created"
+    }, 201 
+
+@app.get('/orders/<int:user_id>')
+def get_orders(user_id):
+    this_user = User.query.get(user_id)
+    if this_user:
+        user_orders = []
+        for order in this_user.orders:
+            print(order)
+            this_order = {}
+            this_order['order_id'] = order.id
+            order_items = []
+            for item in order.items:
+                this_item = {}
+                product = Product.query.get(item.prod_id)
+                this_item['product_name'] = product.p_name
+                this_item['quantity'] = item.quantity
+                this_item['price'] = item.price
+                order_items.append(this_item)
+            this_order['items'] = order_items
+            this_order['amount'] = order.amount
+            user_orders.append(this_order)
+        return user_orders, 200
+    else:
+        return {
+            "message":"User not found"
         }, 404
+
+
+         
+
+

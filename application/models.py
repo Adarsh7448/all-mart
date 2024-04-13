@@ -11,6 +11,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean(),nullable = False)
     fs_uniquifier = db.Column(db.String(), unique = True, nullable = False)
     roles = db.relationship('Role', backref = 'bearer', secondary = 'role_user')
+    orders = db.relationship('Order', backref = 'owner')
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key = True)
