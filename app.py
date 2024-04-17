@@ -2,8 +2,9 @@ from flask import Flask
 from application.config import LocalDevelopmentConfig 
 from application.database import db
 from flask_security import Security, SQLAlchemyUserDatastore 
-from application.models import User, Role
+from application.models import User, Role, Product, OrderProduct
 from application.resources import api
+from application.make_celery import celery_init_app
 
 app = None 
 
@@ -15,9 +16,11 @@ def create_app():
     datastore = SQLAlchemyUserDatastore(db, User, Role)
     app.security = Security(app, datastore)
     app.app_context().push()
-    return app 
+    return app
 
 app = create_app()
+
+celery = celery_init_app(app)
 
 from application.views import *
 

@@ -10,7 +10,20 @@ const dashboard = Vue.component('user-dash', {
                             </div>
                         </div>
                         <div v-else>
-                            <h3 class="mt-3">Your major categories</h3>
+                            <div class="d-flex justify-content-between mt-3"> 
+                                <h3>Your major categories</h3>
+                                <div>
+                                    <button class="btn btn-warning m-2" @click="exportCsv()">
+                                        <span v-if="exporting">
+                                            <span class="spinner-border spinner-border-sm"></span>
+                                            <span role="status">Loading...</span>
+                                        </span>
+                                        <span v-else>
+                                            <i class="bi bi-arrow-down-circle"></i> Download Product Details
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
                             <div v-if="cat_data.length!=0">
                                 <table class="table table-hover">
                                     <thead>
@@ -96,7 +109,8 @@ const dashboard = Vue.component('user-dash', {
             id:"",
             cat_data: [],
             message: "Invalid user",
-            loading: true
+            loading: true,
+            exporting: false
         }
     },
     beforeMount(){
@@ -147,6 +161,23 @@ const dashboard = Vue.component('user-dash', {
                 this.message = error.response.errors[0];
                 this.loading = false
             }   
+        },
+        async exportCsv(){
+            this.exporting = true;
+            let response = await fetch('/export')
+            let output = await response.json()
+            let task_trigger = setInterval(async ()=>{
+                let task_response = await fetch(`/download_report/${output.task_id}`)
+                if(task_response.ok){
+                    clearInterval(task_trigger)
+                    this.exporting = false;
+                    window.location.href = `/download_report/${output.task_id}`
+                }
+                else{
+                    let error = await task_response.json();
+                    console.log(error.message)
+                }
+            }, 500)
         }
     }
 }

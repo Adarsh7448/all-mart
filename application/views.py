@@ -1,12 +1,16 @@
 from flask import current_app as app 
-from flask import request, render_template 
+from flask import request, render_template, send_from_directory 
 from .database import db
 from .models import Category, Product, User, Cart, Order, OrderProduct
+from .tasks import display, export_csv
 from flask_security import hash_password
 from flask_security import auth_required, roles_required
 from werkzeug.security import generate_password_hash, check_password_hash 
 import string
 import random
+import csv
+from celery import result
+
  
 @app.route('/')
 def home():
@@ -183,7 +187,46 @@ def get_orders(user_id):
             "message":"User not found"
         }, 404
 
+# @app.get('/export')
+# def export_csv():
+#     all_products = Product.query.all()
+#     with open('static/products.csv', 'w', newline='') as csvfile:
+#         sr_no = 1
+#         products_csv = csv.writer(csvfile, delimiter=',')
+#         products_csv.writerow(['Sr No', 'Product Name', 'Units Available', 'Units Sold', 'Unit Price'])
+#         for product in all_products:
+#             orders = OrderProduct.query.filter_by(prod_id = product.id).all()
+#             sold = 0
+#             for order in orders:
+#                 sold += order.quantity
+            
+#             this_prod = [sr_no, product.p_name, product.quantity, sold, product.price]
+#             products_csv.writerow(this_prod)
+#             sr_no += 1
+        
+#     return send_from_directory("static","products.csv")
 
+@app.route('/display')
+def display_trigger():
+    job = display.delay()
+    return "Running async celery task! " + str(job.get())
+
+@app.route('/export')
+def export_trigger():
+    job = export_csv.delay()
+    return {
+        "task_id": job.id
+    }
+
+@app.route('/download_report/<id>')
+def download_csv(id):
+    res = result.AsyncResult(id)
+    if res.ready():
+        return send_from_directory("static", res.result)
+    else:
+        return {
+            "message": "response not ready yet"
+        }, 404
          
 
 
