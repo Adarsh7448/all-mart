@@ -3,6 +3,7 @@ from .models import Product, OrderProduct
 import csv
 import datetime
 import time
+from .send_mail import send_email, format_message
 
 @shared_task(ignore_result = False, name = 'display')
 def display():
@@ -27,3 +28,17 @@ def export_csv():
             products_csv.writerow(this_prod)
             sr_no += 1
     return csv_file_name
+
+@shared_task(ignore_result = False, name = 'mail_user')
+def mailer():
+    new_users = [
+            {"name": "Shivani", "e-mail": "varmashivaniv3@gmail.com"},
+            {"name": "Adarsh", "e-mail": "adarsh.madre2@gmail.com"}
+        ]
+    for user in new_users:
+        message = format_message('templates/mail_text.html', user)
+        send_email(user["e-mail"], 
+                subject="Welcome note - IITM", 
+                message = message,
+                content = "html")
+                # attachment_file = "static/manual.pdf")
